@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  redis:
+    image: redis
+    hostname: redis
+    ports:
+      - "6379:6379"
+  app:
+    build: .
+    image: podinfo
+    environment:
+      - REDIS_URL=redis://redis:6379/
+      - RAILS_ENV=production
+      - RACK_ENV=production
+    depends_on:
+      - redis
+    command: bundle exec rackup --host 0.0.0.0 -p 4567
+    ports:
+      - "4567:4567"
+volumes:
+  cache:
+    driver: local
